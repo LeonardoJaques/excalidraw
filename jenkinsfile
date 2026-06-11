@@ -33,11 +33,11 @@ pipeline {
                 sh '''
                     sleep 5
                     HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://jaquesprojetos.com.br/excalidraw/)
-                    if [ "$HTTP_CODE" != "401" ]; then
-                        echo "ERRO: /excalidraw retornou $HTTP_CODE (esperado 401, protegido por basic auth)"
+                    if [ "$HTTP_CODE" != "302" ]; then
+                        echo "ERRO: /excalidraw retornou $HTTP_CODE (esperado 302, redirecionando para login do Authelia)"
                         exit 1
                     fi
-                    echo "✅ Deploy verificado (protegido por basic auth)!"
+                    echo "✅ Deploy verificado (protegido por Authelia)!"
                 '''
             }
         }
