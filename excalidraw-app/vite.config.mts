@@ -11,8 +11,10 @@ import { woff2BrowserPlugin } from "../scripts/woff2/woff2-vite-plugins";
 export default defineConfig(({ mode }) => {
   // To load .env variables
   const envVars = loadEnv(mode, `../`);
+  const base = envVars.VITE_APP_BASE_PATH || "/";
   // https://vitejs.dev/config/
   return {
+    base,
     server: {
       port: Number(envVars.VITE_APP_PORT || 3000),
       // open the browser
@@ -153,6 +155,11 @@ export default defineConfig(({ mode }) => {
               type: "image/png",
             },
             {
+              src: "android-chrome-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+            },
+            {
               src: "apple-touch-icon.png",
               type: "image/png",
               sizes: "180x180",
@@ -167,21 +174,34 @@ export default defineConfig(({ mode }) => {
               sizes: "16x16",
               type: "image/png",
             },
+            {
+              src: "maskable_icon_x192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "maskable",
+            },
+            {
+              src: "maskable_icon_x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
+            },
           ],
-          start_url: "/",
+          start_url: base,
+          scope: base,
           display: "standalone",
-          theme_color: "#121212",
-          background_color: "#ffffff",
+          theme_color: "#131313",
+          background_color: "#131313",
           file_handlers: [
             {
-              action: "/",
+              action: base,
               accept: {
                 "application/vnd.excalidraw+json": [".excalidraw"],
               },
             },
           ],
           share_target: {
-            action: "/web-share-target",
+            action: `${base}web-share-target`,
             method: "POST",
             enctype: "multipart/form-data",
             params: {
@@ -199,32 +219,32 @@ export default defineConfig(({ mode }) => {
           },
           screenshots: [
             {
-              src: "/screenshots/virtual-whiteboard.png",
+              src: `${base}screenshots/virtual-whiteboard.png`,
               type: "image/png",
               sizes: "462x945",
             },
             {
-              src: "/screenshots/wireframe.png",
+              src: `${base}screenshots/wireframe.png`,
               type: "image/png",
               sizes: "462x945",
             },
             {
-              src: "/screenshots/illustration.png",
+              src: `${base}screenshots/illustration.png`,
               type: "image/png",
               sizes: "462x945",
             },
             {
-              src: "/screenshots/shapes.png",
+              src: `${base}screenshots/shapes.png`,
               type: "image/png",
               sizes: "462x945",
             },
             {
-              src: "/screenshots/collaboration.png",
+              src: `${base}screenshots/collaboration.png`,
               type: "image/png",
               sizes: "462x945",
             },
             {
-              src: "/screenshots/export.png",
+              src: `${base}screenshots/export.png`,
               type: "image/png",
               sizes: "462x945",
             },

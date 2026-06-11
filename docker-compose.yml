@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        - NODE_ENV=development
+        - NODE_ENV=production
     container_name: excalidraw
     ports:
       - "3000:80"
@@ -14,7 +14,7 @@ services:
     healthcheck:
       disable: true
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     volumes:
       - ./:/opt/node_app/app:delegated
       - ./package.json:/opt/node_app/package.json

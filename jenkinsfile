@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_DIR = '/home/leo/docker/excalidraw'
+        COMPOSE_DIR = '/home/leo/docker'
+        EXCALIDRAW_AUTH = credentials('excalidraw-basicauth')
+    }
+
+    stages {
+        stage('📥 Sync código') {
+            steps {
+                sh '''
+                    mkdir -p ${APP_DIR}
+                    rsync -a --delete --exclude .git ./ ${APP_DIR}/
+                '''
+            }
+        }
+
+        stage('🏗️ Build imagem') {
+            steps {
+                sh 'cd ${COMPOSE_DIR} && docker compose build excalidraw'
+            }
+        }
+
+        stage('🚀 Deploy') {
+            steps {
+                sh 'cd ${COMPOSE_DIR} && docker compose up -d excalidraw'
+            }
+        }
+
+        stage('🔍 Verificar') {
+            steps {
+                sh '''
+                    sleep 5
+                    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -u "$EXCALIDRAW_AUTH" https://jaquesprojetos.com.br/excalidraw/)
+                    if [ "$HTTP_CODE" != "200" ]; then
+                        echo "ERRO: /excalidraw retornou $HTTP_CODE"
+                        exit 1
+                    fi
+                    echo "✅ Deploy verificado!"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deploy do Excalidraw concluído! 🚀'
+        }
+        failure {
+            echo '❌ Deploy do Excalidraw falhou!'
+        }
+    }
+}

@@ -1,10 +1,32 @@
-.excalidraw {
-  --color-primary-contrast-offset: #625ee0; // to offset Chubb illusion
+// jaquesprojetos.com.br branding (verde sobre fundo escuro).
+// `body .excalidraw` outranks the `.excalidraw`/`.excalidraw.theme--dark`
+// rules in packages/excalidraw/css/theme.scss regardless of bundle order.
+body .excalidraw {
+  --color-primary: #54e87c;
+  --color-primary-darker: #2fcb63;
+  --color-primary-darkest: #1f9c4c;
+  --color-primary-light: #d6f9e1;
+  --color-primary-light-darker: #c2f4d2;
+  --color-primary-hover: #3ecf6c;
+  --color-brand-hover: #3ecf6c;
+  --color-brand-active: #2fcb63;
+  --color-logo-text: #0a3d1f;
+  --color-primary-contrast-offset: #3ecf6c; // to offset Chubb illusion
 
   &.theme--dark {
-    --color-primary-contrast-offset: #726dff; // to offset Chubb illusion
+    --color-primary: #54e87c;
+    --color-primary-darker: #6dfb95;
+    --color-primary-darkest: #a8f5c0;
+    --color-primary-hover: #6dfb95;
+    --color-brand-hover: #6dfb95;
+    --color-brand-active: #2fcb63;
+    --color-logo-text: #a8f5c0;
+    --island-bg-color: #1c1b1b;
+    --color-primary-contrast-offset: #6dfb95; // to offset Chubb illusion
   }
+}
 
+.excalidraw {
   .top-right-ui {
     display: flex;
     justify-content: center;
