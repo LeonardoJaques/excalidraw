@@ -81,6 +81,7 @@ import {
   LibraryLocalStorageMigrationAdapter,
   LocalData,
 } from "./data/LocalData";
+import { LibraryRemoteAdapter } from "./data/LibraryRemoteAdapter";
 import { isBrowserStorageStateNewer } from "./data/tabSync";
 import clsx from "clsx";
 import {
@@ -365,7 +366,7 @@ const ExcalidrawWrapper = () => {
 
   useHandleLibrary({
     excalidrawAPI,
-    adapter: LibraryIndexedDBAdapter,
+    adapter: LibraryRemoteAdapter,
     // TODO maybe remove this in several months (shipped: 24-03-11)
     migrationAdapter: LibraryLocalStorageMigrationAdapter,
   });
