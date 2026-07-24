@@ -25,14 +25,17 @@ export const ImportSceneDialog = ({ excalidrawAPI, onClose }: Props) => {
       .catch(() => setError("Não foi possível carregar a lista de cenas."));
   }, []);
 
-  const handleLoad = async (id: string) => {
-    setLoadingId(id);
+  const handleLoad = async (scene: SceneListEntry) => {
+    setLoadingId(scene.id);
     try {
-      const restored = await loadScene(id);
+      const restored = await loadScene(scene.id);
       excalidrawAPI.addFiles(Object.values(restored.files));
       excalidrawAPI.updateScene({
         elements: restored.elements,
-        appState: restored.appState,
+        // clearAppStateForDatabase strips `name` before persisting, so
+        // restore it from the scene list entry we already have here -
+        // this is what lets a later "Salvar cena" update this same scene.
+        appState: { ...restored.appState, name: scene.name },
         storeAction: StoreAction.CAPTURE,
       });
       onClose();
@@ -75,7 +78,7 @@ export const ImportSceneDialog = ({ excalidrawAPI, onClose }: Props) => {
             >
               <button
                 type="button"
-                onClick={() => handleLoad(scene.id)}
+                onClick={() => handleLoad(scene)}
                 disabled={loadingId !== null}
                 style={{
                   flex: 1,

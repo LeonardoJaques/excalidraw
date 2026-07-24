@@ -29,6 +29,9 @@ export const SaveSceneDialog = ({ excalidrawAPI, onClose }: Props) => {
         excalidrawAPI.getAppState(),
         excalidrawAPI.getFiles(),
       );
+      // clearAppStateForDatabase strips `name` before persisting, so the app
+      // itself has to remember it to know which scene a future save updates.
+      excalidrawAPI.updateScene({ appState: { name: name.trim() } });
       onClose();
     } catch {
       setError("Não foi possível salvar. Tente novamente.");
