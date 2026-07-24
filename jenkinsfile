@@ -2,41 +2,53 @@ pipeline {
     agent any
 
     environment {
-        APP_DIR = '/home/leo/docker/excalidraw'
-        API_DIR = '/home/leo/docker/excalidraw-api'
+        VPS_HOST    = '172.19.0.1'
+        VPS_USER    = 'leo'
+        SSH_KEY     = '/var/jenkins_home/.ssh/id_rsa'
+        SSH_OPTS    = '-o StrictHostKeyChecking=no -o BatchMode=yes'
         COMPOSE_DIR = '/home/leo/docker'
+        APP_DIR     = '/home/leo/docker/excalidraw'
+        API_DIR     = '/home/leo/docker/excalidraw-api'
     }
 
     stages {
         stage('📥 Sync código') {
             steps {
-                sh '''
-                    mkdir -p ${APP_DIR}
-                    rsync -a --delete --exclude .git ./ ${APP_DIR}/
-
-                    mkdir -p ${API_DIR}
-                    rsync -a --delete ./excalidraw-api/ ${API_DIR}/
+                sh '''#!/bin/bash
+                    ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "rm -rf ${APP_DIR} && mkdir -p ${APP_DIR}"
+                    tar --exclude=.git -cf - . | ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "tar xf - -C ${APP_DIR}"
+                    ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "rm -rf ${API_DIR} && cp -r ${APP_DIR}/excalidraw-api ${API_DIR}"
                 '''
             }
         }
 
         stage('🏗️ Build imagem') {
             steps {
-                sh 'cd ${COMPOSE_DIR} && docker compose build excalidraw excalidraw-api'
+                sh '''#!/bin/bash
+                    ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "cd ${COMPOSE_DIR} && docker compose build excalidraw excalidraw-api"
+                '''
             }
         }
 
         stage('🚀 Deploy') {
             steps {
-                sh 'cd ${COMPOSE_DIR} && docker compose up -d excalidraw excalidraw-api'
+                sh '''#!/bin/bash
+                    ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "cd ${COMPOSE_DIR} && docker compose up -d excalidraw excalidraw-api"
+                '''
             }
         }
 
         stage('🔍 Verificar') {
             steps {
-                sh '''
+                sh '''#!/bin/bash
                     sleep 5
-                    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://jaquesprojetos.com.br/excalidraw/)
+                    HTTP_CODE=$(ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
+                        "curl -s -o /dev/null -w '%{http_code}' https://jaquesprojetos.com.br/excalidraw/")
                     if [ "$HTTP_CODE" != "302" ]; then
                         echo "ERRO: /excalidraw retornou $HTTP_CODE (esperado 302, redirecionando para login do Authelia)"
                         exit 1
