@@ -46,7 +46,7 @@ pipeline {
         stage('🔍 Verificar') {
             steps {
                 sh '''#!/bin/bash
-                    sleep 5
+                    sleep 15
                     HTTP_CODE=$(ssh -i "${SSH_KEY}" ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} \
                         "curl -s -o /dev/null -w '%{http_code}' https://jaquesprojetos.com.br/excalidraw/")
                     if [ "$HTTP_CODE" != "302" ]; then
