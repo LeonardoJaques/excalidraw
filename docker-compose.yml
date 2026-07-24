@@ -6,6 +6,7 @@ services:
       context: .
       args:
         - NODE_ENV=production
+        - VITE_APP_BASE_PATH=/excalidraw/
     container_name: excalidraw
     ports:
       - "3000:80"
@@ -15,11 +16,40 @@ services:
       disable: true
     environment:
       - NODE_ENV=production
+    depends_on:
+      - excalidraw-api
     volumes:
       - ./:/opt/node_app/app:delegated
       - ./package.json:/opt/node_app/package.json
       - ./yarn.lock:/opt/node_app/yarn.lock
       - notused:/opt/node_app/app/node_modules
 
+  excalidraw-api:
+    build:
+      context: ./excalidraw-api
+    container_name: excalidraw-api
+    restart: on-failure
+    environment:
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=excalidraw
+      - PGPASSWORD=excalidraw
+      - PGDATABASE=excalidraw
+    depends_on:
+      - postgres
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: excalidraw-postgres
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=excalidraw
+      - POSTGRES_PASSWORD=excalidraw
+      - POSTGRES_DB=excalidraw
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./excalidraw-api/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
 volumes:
   notused:
+  postgres_data:

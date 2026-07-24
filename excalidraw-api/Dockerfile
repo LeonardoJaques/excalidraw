@@ -1,9 +1,9 @@
 FROM node:22-alpine
 
 WORKDIR /app
+COPY package.json .
+RUN npm install --omit=dev
 COPY server.js .
-
-VOLUME /data
 
 HEALTHCHECK CMD node -e "require('http').get('http://localhost/excalidraw/api/library', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 

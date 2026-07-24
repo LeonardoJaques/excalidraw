@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         APP_DIR = '/home/leo/docker/excalidraw'
+        API_DIR = '/home/leo/docker/excalidraw-api'
         COMPOSE_DIR = '/home/leo/docker'
     }
 
@@ -12,19 +13,22 @@ pipeline {
                 sh '''
                     mkdir -p ${APP_DIR}
                     rsync -a --delete --exclude .git ./ ${APP_DIR}/
+
+                    mkdir -p ${API_DIR}
+                    rsync -a --delete ./excalidraw-api/ ${API_DIR}/
                 '''
             }
         }
 
         stage('🏗️ Build imagem') {
             steps {
-                sh 'cd ${COMPOSE_DIR} && docker compose build excalidraw'
+                sh 'cd ${COMPOSE_DIR} && docker compose build excalidraw excalidraw-api'
             }
         }
 
         stage('🚀 Deploy') {
             steps {
-                sh 'cd ${COMPOSE_DIR} && docker compose up -d excalidraw'
+                sh 'cd ${COMPOSE_DIR} && docker compose up -d excalidraw excalidraw-api'
             }
         }
 

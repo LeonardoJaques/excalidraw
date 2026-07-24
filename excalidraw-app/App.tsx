@@ -857,6 +857,7 @@ const ExcalidrawWrapper = () => {
           theme={appTheme}
           setTheme={(theme) => setAppTheme(theme)}
           refresh={() => forceRefresh((prev) => !prev)}
+          excalidrawAPI={excalidrawAPI}
         />
         <AppWelcomeScreen
           onCollabDialogOpen={onCollabDialogOpen}
