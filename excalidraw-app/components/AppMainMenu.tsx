@@ -35,13 +35,13 @@ export const AppMainMenu: React.FC<{
               icon={save}
               onClick={() => setIsSaveDialogOpen(true)}
             >
-              Salvar
+              Salvar cena
             </MainMenu.Item>
             <MainMenu.Item
               icon={LoadIcon}
               onClick={() => setIsImportDialogOpen(true)}
             >
-              Importar
+              Importar cena
             </MainMenu.Item>
           </>
         )}
