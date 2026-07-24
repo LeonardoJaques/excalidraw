@@ -19,4 +19,4 @@ FROM nginx:1.27-alpine
 COPY --from=build /opt/node_app/excalidraw-app/build /usr/share/nginx/html
 COPY nginx-excalidraw.conf /etc/nginx/conf.d/default.conf
 
-HEALTHCHECK CMD wget -q -O /dev/null http://localhost || exit 1
+HEALTHCHECK --interval=5s --start-period=5s CMD wget -q -O /dev/null http://localhost || exit 1

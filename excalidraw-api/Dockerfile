@@ -5,7 +5,7 @@ COPY package.json .
 RUN npm install --omit=dev
 COPY server.js .
 
-HEALTHCHECK CMD node -e "require('http').get('http://localhost/excalidraw/api/library', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+HEALTHCHECK --interval=5s --start-period=5s CMD node -e "require('http').get('http://localhost/excalidraw/api/library', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
 EXPOSE 80
 
