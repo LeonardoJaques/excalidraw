@@ -121,6 +121,7 @@ import {
 import { appThemeAtom, useHandleAppTheme } from "./useHandleAppTheme";
 import { getPreferredLanguage } from "./app-language/language-detector";
 import { useAppLangCode } from "./app-language/language-state";
+import { SessionGuard } from "./components/SessionGuard";
 import DebugCanvas, {
   debugRenderer,
   isVisualDebuggerEnabled,
@@ -1123,6 +1124,7 @@ const ExcalidrawWrapper = () => {
           />
         )}
       </Excalidraw>
+      <SessionGuard />
     </div>
   );
 };
